@@ -1,15 +1,19 @@
+"""Token Schema"""
+#pylint: disable=too-few-public-methods,unused-argument,no-self-use
 import graphene
-from graphene import relay
-from graphene_django.filter import DjangoFilterConnectionField
-from graphene_django.types import DjangoObjectType
 from app.services.jwt import JWT
 
 class Token(graphene.ObjectType):
+    """Token schema class"""
     token = graphene.String()
 
 class TokenQuery(graphene.ObjectType):
+    """Token Query
+    Returns a new JWT.
+    """
     token = graphene.Field(Token)
 
     def resolve_token(self, info, **kwargs):
-        token = JWT.encode({ 'first': 'last' })
+        """Resolver for the `token` query."""
+        token = JWT.encode({'first': 'last'})
         return TokenQuery(token=token)

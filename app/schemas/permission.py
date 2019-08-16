@@ -1,5 +1,7 @@
-import graphene
+"""Permision Schema"""
+#pylint: disable=too-few-public-methods,unused-argument,no-self-use
 from django.contrib.auth.models import Permission
+import graphene
 from graphene import relay
 from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.types import DjangoObjectType

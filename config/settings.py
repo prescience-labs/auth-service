@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'graphene_django',
 
-    'app.apps.AppConfig',
+    'app.apps.Config',
 ]
 
 MIDDLEWARE = [
@@ -133,5 +133,5 @@ TOKEN_EXPIRATION_PERIOD = 7
 
 # GraphQL
 GRAPHENE = {
-    'SCHEMA': 'app.schema.schema'
+    'SCHEMA': 'app.schema.SCHEMA'
 }

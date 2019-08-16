@@ -1,8 +1,9 @@
 import graphene
-from app.schemas import PermissionQuery
+from app.schemas import PermissionQuery, TokenQuery
 
 class Query(
     PermissionQuery,
+    TokenQuery,
     graphene.ObjectType,
 ):
     pass

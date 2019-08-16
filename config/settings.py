@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ap$cr+vnll$25_ijpxyci#8y_3#koq6_ezf^$2tfr-9-++@j)a'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -114,6 +114,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+
+# JWT
+# Tokens expire in 7 days by default
+TOKEN_EXPIRATION_PERIOD = 7
+
+
+# GraphQL
 GRAPHENE = {
     'SCHEMA': 'app.schema.schema'
 }

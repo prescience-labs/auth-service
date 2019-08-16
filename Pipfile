@@ -12,6 +12,7 @@ python-dotenv = "*"
 graphene = "*"
 graphene-django = "*"
 django-filter = "*"
+pyjwt = "*"
 
 [requires]
 python_version = "3.7"

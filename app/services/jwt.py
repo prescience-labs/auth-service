@@ -4,6 +4,20 @@ from django.conf import settings
 
 class JWT:
     @staticmethod
+    def get_user_token(user):
+        """
+        Decide what goes into a token when a user requests one.
+        """
+        print(user.id)
+        print(list(user.get_all_permissions()))
+        return JWT.encode({
+            'user': {
+                'id': user.id,
+                'permissions': list(user.get_all_permissions()),
+            },
+        })
+
+    @staticmethod
     def encode(
         payload,
         token_expiration_days=settings.TOKEN_EXPIRATION_PERIOD,

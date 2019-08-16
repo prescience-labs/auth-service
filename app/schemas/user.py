@@ -36,10 +36,7 @@ class UserQuery(graphene.ObjectType):
         return User.objects.all()
 
 class CreateUser(relay.ClientIDMutation):
-    """Mutation to create a new user from GraphQL.
-
-    Cretes a new user and returns that user.
-    """
+    """Create a new user. Returns the new user."""
     class Input:
         """Arguments for the createUser mutation."""
         email = graphene.String(required=True)
@@ -56,8 +53,9 @@ class CreateUser(relay.ClientIDMutation):
         user = User.objects.create(
             email=email,
             username=email,
-            password=password,
         )
+        user.set_password(password)
+        user.save()
         return CreateUser(user)
 
 class UserMutation(graphene.ObjectType):

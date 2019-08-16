@@ -5,7 +5,13 @@ into one application-global GraphQL schema.
 """
 #pylint: disable=unnecessary-pass,too-few-public-methods
 import graphene
-from app.schemas import PermissionQuery, TokenQuery, UserQuery, UserMutation
+from app.schemas import (
+    AuthMutation,
+    PermissionQuery,
+    TokenQuery,
+    UserQuery,
+    UserMutation,
+)
 
 class Query(
         PermissionQuery,
@@ -19,6 +25,7 @@ class Query(
     pass
 
 class Mutation(
+        AuthMutation,
         UserMutation,
         graphene.ObjectType,
 ):

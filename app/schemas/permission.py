@@ -27,9 +27,9 @@ class PermissionQuery(graphene.ObjectType):
     permission = relay.Node.Field(PermissionNode)
     permissions = DjangoFilterConnectionField(PermissionNode)
 
-    def resolve_permission(self, info, review_id):
+    def resolve_permission(self, info, permission_id):
         """Resolves the `permission(id: ID!)` query."""
-        return Permission.objects.get(pk=review_id)
+        return Permission.objects.get(pk=permission_id)
 
     def resolve_permissions(self, info, **kwargs):
         """Resolves the `permissions` query."""

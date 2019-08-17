@@ -32,7 +32,6 @@ class AuthUserLogin(graphene.Mutation):
         print(user)
         if user is not None:
             token = JWT.get_user_token(user)
-            print(token)
             return AuthUserLogin({'token':token})
         else:
             # user authentication failed

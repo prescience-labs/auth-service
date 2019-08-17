@@ -1,8 +1,7 @@
 """Auth Schema"""
-#pylint: disable=too-few-public-methods,unused-argument,no-self-use
+#pylint: disable=too-few-public-methods,unused-argument,no-self-use,no-else-return
 from django.contrib.auth import authenticate
 import graphene
-from graphene import relay
 from app.services.jwt import JWT
 
 class AuthTokenNode(graphene.ObjectType):
@@ -24,17 +23,14 @@ class AuthUserLogin(graphene.Mutation):
         Default method for Graphene Mutation.
         Do not rename.
         """
-        print(email, password)
         user = authenticate(
             username=email,
             password=password
         )
-        print(user)
-        if user is not None:
+        if user is None:
             token = JWT.get_user_token(user)
             return AuthUserLogin({'token':token})
         else:
-            # user authentication failed
             raise Exception('User authentication failed.')
 
 class AuthMutation(graphene.ObjectType):

@@ -1,10 +1,14 @@
 """Auth Schema"""
 #pylint: disable=too-few-public-methods,unused-argument,no-self-use
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 import graphene
 from graphene import relay
 from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.types import DjangoObjectType
+
+#pylint: disable=invalid-name
+User = get_user_model()
+#pylint: enable=invalid-name
 
 class UserNode(DjangoObjectType):
     """The Graphene Relay node for the User model.
@@ -15,12 +19,28 @@ class UserNode(DjangoObjectType):
         https://docs.graphene-python.org/projects/django/en/latest/tutorial-relay/#schema
         """
         model = User
-        fields = ('username', 'email')
+        fields = ('username', 'email', 'permissions',)
         filter_fields = {
             'username': ['exact', 'icontains', 'istartswith'],
             'email': ['exact', 'icontains', 'istartswith'],
         }
         interfaces = (relay.Node, )
+
+    permissions = graphene.List(graphene.String)
+
+    #pylint: disable=no-member
+    def resolve_id(self, info):
+        """
+        Return the user.uid field instead of the integer id field.
+        """
+        return self.uid
+
+    def resolve_permissions(self, info):
+        """
+        Return all permissions accessible to the user.
+        """
+        return self.get_all_permissions()
+    #pylint: enable=no-member
 
 class UserQuery(graphene.ObjectType):
     """The GraphQL query for the User resource."""

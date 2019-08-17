@@ -10,7 +10,7 @@ class JWT:
         """
         return JWT.encode({
             'user': {
-                'id': user.id,
+                'id': str(user.uid),
                 'permissions': list(user.get_all_permissions()),
             },
         })

@@ -9,7 +9,9 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
+import logging
 import os
+from django.utils.log import DEFAULT_LOGGING
 
 from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv())
@@ -26,8 +28,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+LOG_LEVEL = os.environ.get('LOG_LEVEL', 'DEBUG').upper()
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,0.0.0.0').split(',')
 
 
 # Application definition
@@ -137,3 +140,31 @@ TOKEN_EXPIRATION_PERIOD = 7
 GRAPHENE = {
     'SCHEMA': 'app.schema.SCHEMA'
 }
+
+# Logging
+LOGGING_CONFIG = None
+logging.config.dictConfig({
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(levelname)-8s %(asctime)s %(name)s - %(message)s',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console',
+        },
+    },
+    'loggers': {
+    # root logger
+        '': {
+            'level': LOG_LEVEL,
+            'handlers': ['console'],
+        },
+        'django.utils.autoreload': {
+            'level': 'INFO',
+        }
+    },
+})

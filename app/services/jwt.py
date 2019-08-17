@@ -33,6 +33,11 @@ class JWT:
     @staticmethod
     def refresh(token):
         """Attempt to refresh the provided token."""
-        decoded = jwt.decode(token, settings.SECRET_KEY)
-        user = User.objects.get(uid=decoded['user']['id'])
-        return JWT.get_user_token(user)
+        try:
+            decoded = jwt.decode(token, settings.SECRET_KEY)
+            user = User.objects.get(uid=decoded['user']['id'])
+            return JWT.get_user_token(user)
+        except jwt.ExpiredSignatureError:
+            raise Exception('Token refresh failed. The provided token was expired.')
+        except:
+            raise Exception('Token refresh failed.')

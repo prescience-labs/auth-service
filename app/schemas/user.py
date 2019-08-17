@@ -1,6 +1,7 @@
 """Auth Schema"""
 #pylint: disable=too-few-public-methods,unused-argument,no-self-use
 from django.contrib.auth import get_user_model
+from django.db.utils import IntegrityError
 import graphene
 from graphene import relay
 from graphene_django.filter import DjangoFilterConnectionField
@@ -19,9 +20,8 @@ class UserNode(DjangoObjectType):
         https://docs.graphene-python.org/projects/django/en/latest/tutorial-relay/#schema
         """
         model = User
-        fields = ('username', 'email', 'permissions',)
+        fields = ('email', 'permissions',)
         filter_fields = {
-            'username': ['exact', 'icontains', 'istartswith'],
             'email': ['exact', 'icontains', 'istartswith'],
         }
         interfaces = (relay.Node, )
@@ -44,16 +44,14 @@ class UserNode(DjangoObjectType):
 
 class UserQuery(graphene.ObjectType):
     """The GraphQL query for the User resource."""
-    user = relay.Node.Field(UserNode)
     users = DjangoFilterConnectionField(UserNode)
-
-    def resolve_user(self, info, user_id):
-        """Resolves the `user(id: ID!)` query."""
-        return User.objects.get(pk=user_id)
 
     def resolve_users(self, info, **kwargs):
         """Resolves the `users` query."""
-        return User.objects.all()
+        try:
+            return User.objects.all()
+        except:
+            raise Exception('Failed to resolve users.')
 
 class CreateUser(relay.ClientIDMutation):
     """Create a new user. Returns the new user."""
@@ -70,13 +68,18 @@ class CreateUser(relay.ClientIDMutation):
         Default method for Graphene Relay.
         Do not rename.
         """
-        user = User.objects.create(
-            email=email,
-            username=email,
-        )
-        user.set_password(password)
-        user.save()
-        return CreateUser(user)
+        try:
+            user = User.objects.create(
+                email=email,
+                username=email,
+            )
+            user.set_password(password)
+            user.save()
+            return CreateUser(user)
+        except IntegrityError:
+            raise Exception('A user with that email already exists.')
+        except:
+            raise Exception('Failed to create the user. :(')
 
 class UserMutation(graphene.ObjectType):
     """GraphQL mutations for the User resource."""

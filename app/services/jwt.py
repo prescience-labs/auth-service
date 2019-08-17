@@ -8,8 +8,6 @@ class JWT:
         """
         Decide what goes into a token when a user requests one.
         """
-        print(user.id)
-        print(list(user.get_all_permissions()))
         return JWT.encode({
             'user': {
                 'id': user.id,

@@ -27,12 +27,32 @@ class AuthUserLogin(graphene.Mutation):
             username=email,
             password=password
         )
-        if user is None:
+        if user is not None:
             token = JWT.get_user_token(user)
             return AuthUserLogin({'token':token})
         else:
             raise Exception('User authentication failed.')
 
+class AuthTokenRefresh(graphene.Mutation):
+    """
+    Attempts to refresh a given JWT.
+    """
+    class Arguments:
+        """Arguments for the authTokenRefresh mutation."""
+        token = graphene.String(required=True)
+
+    token = graphene.Field(AuthTokenNode)
+
+    @classmethod
+    def mutate(cls, root, info, token):
+        """
+        Default method for Graphene Mutation.
+        Do not rename.
+        """
+        token = JWT.refresh(token)
+        return AuthTokenRefresh({'token':token})
+
 class AuthMutation(graphene.ObjectType):
     """GraphQL mutations for Authentication/Authorization."""
     auth_user_login = AuthUserLogin.Field()
+    auth_token_refresh = AuthTokenRefresh.Field()

@@ -1,6 +1,11 @@
 import jwt
 from datetime import datetime, timedelta
 from django.conf import settings
+from django.contrib.auth import get_user_model
+
+#pylint: disable=invalid-name
+User = get_user_model()
+#pylint: enable=invalid-name
 
 class JWT:
     @staticmethod
@@ -22,6 +27,12 @@ class JWT:
     ):
         expiration_time = datetime.utcnow() + timedelta(days=token_expiration_days)
         payload['exp'] = expiration_time
-        payload['nbf'] = datetime.utcnow()
         token = jwt.encode(payload, settings.SECRET_KEY)
         return token.decode('UTF-8')
+
+    @staticmethod
+    def refresh(token):
+        """Attempt to refresh the provided token."""
+        decoded = jwt.decode(token, settings.SECRET_KEY)
+        user = User.objects.get(uid=decoded['user']['id'])
+        return JWT.get_user_token(user)

@@ -10,6 +10,7 @@ from graphene_django.views import GraphQLView
 from app import views
 
 urlpatterns = [
+    path('auth/token/', views.Token.as_view(), name='auth_token'),
     path('users/', views.UserList.as_view(), name='user_list'),
     path('users/<str:uid>/', views.UserDetail.as_view(), name='user_detail'),
 

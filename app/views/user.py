@@ -1,4 +1,4 @@
-"""App Views"""
+"""User Views"""
 from rest_framework import generics
 from django.contrib.auth import get_user_model
 from app.serializers import UserSerializer

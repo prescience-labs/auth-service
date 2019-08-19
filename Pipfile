@@ -15,6 +15,7 @@ django-filter = "*"
 pyjwt = "*"
 djangorestframework = "*"
 markdown = "*"
+djangorestframework-simplejwt = "*"
 
 [requires]
 python_version = "3.7"

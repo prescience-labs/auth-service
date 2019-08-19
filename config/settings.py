@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 import logging
 import os
+from datetime import timedelta
 from django.utils.log import DEFAULT_LOGGING
 
 from dotenv import find_dotenv, load_dotenv
@@ -135,6 +136,12 @@ AUTH_USER_MODEL = 'app.User'
 # JWT
 # Tokens expire in 7 days by default
 TOKEN_EXPIRATION_PERIOD = 7
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=TOKEN_EXPIRATION_PERIOD),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=TOKEN_EXPIRATION_PERIOD),
+    'ROTATE_REFRESH_TOKENS': True,
+    'USER_ID_FIELD': 'uid',
+}
 
 
 # Django Rest Framework
@@ -143,9 +150,12 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
+
+
 }
 
 

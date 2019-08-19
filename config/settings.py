@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'graphene_django',
 
     'app.apps.Config',
@@ -134,6 +135,18 @@ AUTH_USER_MODEL = 'app.User'
 # JWT
 # Tokens expire in 7 days by default
 TOKEN_EXPIRATION_PERIOD = 7
+
+
+# Django Rest Framework
+# https://www.django-rest-framework.org/
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+}
 
 
 # GraphQL

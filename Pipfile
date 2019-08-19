@@ -13,6 +13,8 @@ graphene = "*"
 graphene-django = "*"
 django-filter = "*"
 pyjwt = "*"
+djangorestframework = "*"
+markdown = "*"
 
 [requires]
 python_version = "3.7"

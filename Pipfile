@@ -9,8 +9,6 @@ pylint = "*"
 [packages]
 django = "*"
 python-dotenv = "*"
-graphene = "*"
-graphene-django = "*"
 django-filter = "*"
 pyjwt = "*"
 djangorestframework = "*"

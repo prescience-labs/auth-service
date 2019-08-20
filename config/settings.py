@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
-    'graphene_django',
 
     'app.apps.Config',
 ]
@@ -154,11 +153,6 @@ REST_FRAMEWORK = {
 
 }
 
-
-# GraphQL
-GRAPHENE = {
-    'SCHEMA': 'app.schema.SCHEMA'
-}
 
 # Logging
 LOGGING_CONFIG = None

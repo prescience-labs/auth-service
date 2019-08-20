@@ -7,7 +7,6 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 from django.urls import include, path, re_path
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework_swagger.views import get_swagger_view
-from graphene_django.views import GraphQLView
 from app import views
 
 schema_view = get_swagger_view(title='Auth Service')
@@ -19,7 +18,6 @@ urlpatterns = [
     path('users/<str:uid>/', views.UserDetail.as_view(), name='user_detail'),
 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('graphql/', GraphQLView.as_view(graphiql=True)),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

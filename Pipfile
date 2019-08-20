@@ -16,6 +16,7 @@ pyjwt = "*"
 djangorestframework = "*"
 markdown = "*"
 djangorestframework-simplejwt = "*"
+django-rest-swagger = "*"
 
 [requires]
 python_version = "3.7"

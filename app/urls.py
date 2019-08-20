@@ -6,18 +6,15 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 #pylint: disable=invalid-name
 from django.urls import include, path, re_path
 from rest_framework.urlpatterns import format_suffix_patterns
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
-)
+from rest_framework_swagger.views import get_swagger_view
 from graphene_django.views import GraphQLView
 from app import views
 
+schema_view = get_swagger_view(title='Auth Service')
+
 urlpatterns = [
-    re_path(r'^auth/token/$', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    re_path(r'^auth/token/refresh/$', TokenRefreshView.as_view(), name='token_refresh'),
-    re_path(r'^auth/token/verify/$', TokenVerifyView.as_view(), name='token_verify'),
+    path('', schema_view),
+
     path('users/', views.UserList.as_view(), name='user_list'),
     path('users/<str:uid>/', views.UserDetail.as_view(), name='user_detail'),
 

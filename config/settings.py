@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_swagger',
     'graphene_django',
 
     'app.apps.Config',
@@ -136,12 +137,6 @@ AUTH_USER_MODEL = 'app.User'
 # JWT
 # Tokens expire in 7 days by default
 TOKEN_EXPIRATION_PERIOD = 7
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=TOKEN_EXPIRATION_PERIOD),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=TOKEN_EXPIRATION_PERIOD),
-    'ROTATE_REFRESH_TOKENS': True,
-    'USER_ID_FIELD': 'uid',
-}
 
 
 # Django Rest Framework
@@ -149,8 +144,9 @@ SIMPLE_JWT = {
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,

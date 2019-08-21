@@ -8,11 +8,17 @@ User = get_user_model()
 #pylint: enable=invalid-name
 
 class UserList(generics.ListCreateAPIView):
+    """
+    List all users.
+    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'uid'
 
 class UserDetail(generics.RetrieveUpdateAPIView):
+    """
+    Get a single user.
+    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'uid'

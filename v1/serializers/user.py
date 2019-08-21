@@ -1,4 +1,5 @@
 """User Serializers"""
+#pylint: disable=too-few-public-methods,no-self-use
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -13,8 +14,14 @@ class UserSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField('get_user_id')
 
     class Meta:
+        """
+        Meta class for the User serializer.
+        """
         model = User
         fields = ['id', 'email']
 
     def get_user_id(self, obj):
+        """
+        Return the user.uid instead of user.id
+        """
         return obj.uid

@@ -2,6 +2,6 @@
 #pylint: disable=invalid-name
 from django.apps import AppConfig
 
-class Config(AppConfig):
+class V1Config(AppConfig):
     """App module configuration."""
-    name = 'app'
+    name = 'v1'

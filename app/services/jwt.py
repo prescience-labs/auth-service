@@ -78,8 +78,7 @@ def jwt_middleware(get_response):
             # set the request.user object
             request._cached_user = user
         except:
-            if not hasattr(request, '_cached_user'):
-                request._cached_user = auth.get_user(request)
+            pass
 
         response = get_response(request)
         return response

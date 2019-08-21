@@ -1,3 +1,4 @@
-from django.shortcuts import render
+"""Common Views"""
+# from django.shortcuts import render
 
 # Create your views here.

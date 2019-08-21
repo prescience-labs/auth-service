@@ -1,5 +1,6 @@
-from django.contrib import admin
-
+"""
+Django admin site settings for the Common app.
+"""
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from common.models import User

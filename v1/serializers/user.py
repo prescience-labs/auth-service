@@ -1,3 +1,4 @@
+"""User Serializers"""
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -6,6 +7,9 @@ User = get_user_model()
 #pylint: enable=invalid-name
 
 class UserSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the User model.
+    """
     id = serializers.SerializerMethodField('get_user_id')
 
     class Meta:

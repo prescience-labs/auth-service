@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 import logging
 import os
-from datetime import timedelta
+
+#pylint: disable=unused-import
 from django.utils.log import DEFAULT_LOGGING
+#pylint: enable=unused-import
 
 from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv())
@@ -28,7 +30,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.getenv('DEBUG', 'false').lower() == 'true' else False
+DEBUG = os.getenv('DEBUG', 'false').lower() == 'true'
+print(DEBUG)
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'DEBUG').upper()
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,0.0.0.0').split(',')
@@ -173,7 +176,7 @@ logging.config.dictConfig({
         },
     },
     'loggers': {
-    # root logger
+        # root logger
         '': {
             'level': LOG_LEVEL,
             'handlers': ['console'],

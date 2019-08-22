@@ -1,3 +1,5 @@
+import logging
+
 import jwt
 from datetime import datetime, timedelta
 from django.conf import settings
@@ -6,6 +8,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 
 #pylint: disable=invalid-name
+logger = logging.getLogger(__name__)
 User = get_user_model()
 #pylint: enable=invalid-name
 
@@ -14,10 +17,13 @@ USER_ID_CLAIM = 'user_id'
 class JWT:
     @staticmethod
     def decode(token):
+        logger.debug('JWT - decode')
         try:
             payload = jwt.decode(token, settings.SECRET_KEY)
+            logger.debug(payload)
             return payload
         except:
+            logger.error('Unable to decode token')
             raise jwt.InvalidTokenError('The provided token was invalid')
 
     @staticmethod
@@ -25,8 +31,9 @@ class JWT:
         payload,
         token_expiration_days=settings.TOKEN_EXPIRATION_PERIOD,
     ):
-        expiration_time = datetime.utcnow() + timedelta(seconds=1)
-        payload['exp'] = expiration_time
+        logger.debug('JWT - encode')
+        payload['iat'] = datetime.utcnow()
+        payload['exp'] = datetime.utcnow() + timedelta(days=token_expiration_days)
         token = jwt.encode(payload, settings.SECRET_KEY)
         return token.decode('UTF-8')
 
@@ -45,15 +52,20 @@ class JWT:
 
     @staticmethod
     def get_user_from_jwt(token):
+        logger.debug('JWT - get_user_from_jwt')
         try:
             if token is not None:
+                logger.debug('Token exists')
                 payload = JWT.decode(token)
+                logger.debug(payload)
                 user = User.objects.get(uid=payload[USER_ID_CLAIM])
+                logger.debug(user)
                 if user is not None:
                     return user
                 else:
                     return None
             else:
+                logger.debug("Token doesn't exist. We shouldn't see this message.")
                 return None
         except:
             raise jwt.InvalidTokenError('The provided token was invalid')
@@ -90,8 +102,12 @@ class JWT:
 def jwt_middleware(get_response):
     def middleware(request):
         try:
+            print('Getting token from auth header')
             token = JWT.get_token_from_auth_header(request)
+            print(token)
+            print('Getting user')
             user = JWT.get_user_from_jwt(token)
+            print(user)
 
             # request._cached_user is used by
             # django.contrib.auth.get_user to

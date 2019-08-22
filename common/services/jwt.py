@@ -31,9 +31,9 @@ class JWT:
         payload,
         token_expiration_days=settings.TOKEN_EXPIRATION_PERIOD,
     ):
-        logger.debug('JWT - encode')
         payload['iat'] = datetime.utcnow()
         payload['exp'] = datetime.utcnow() + timedelta(days=token_expiration_days)
+        logger.debug(f'JWT encode, payload: {str(payload)}')
         token = jwt.encode(payload, settings.SECRET_KEY)
         return token.decode('UTF-8')
 
@@ -52,14 +52,10 @@ class JWT:
 
     @staticmethod
     def get_user_from_jwt(token):
-        logger.debug('JWT - get_user_from_jwt')
         try:
             if token is not None:
-                logger.debug('Token exists')
                 payload = JWT.decode(token)
-                logger.debug(payload)
                 user = User.objects.get(uid=payload[USER_ID_CLAIM])
-                logger.debug(user)
                 if user is not None:
                     return user
                 else:

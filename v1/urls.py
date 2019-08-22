@@ -14,6 +14,7 @@ urlpatterns = [
     path('auth/token/verify/', views.token_verify, name='auth_token_verify'),
 
     path('users/', views.UserList.as_view(), name='user_list'),
+    path('users/current_user/', views.CurrentUser.as_view(), name='current_user'),
     path('users/<str:uid>/', views.UserDetail.as_view(), name='user_detail'),
 ]
 

@@ -91,9 +91,19 @@ class JWT:
 
     @staticmethod
     def get_token_from_auth_header(request):
-        token = request.headers['Authorization'] if request.headers['Authorization'] else None
-        token = str.split(token)[1]
+        token = None
+        try:
+            token = request.headers['Authorization'] if request.headers['Authorization'] else None
+            token = str.split(token)[1]
+        except KeyError:
+            pass
         return token
+
+    @staticmethod
+    def get_user_from_auth_header(request):
+        token = JWT.get_token_from_auth_header(request)
+        user = JWT.get_user_from_jwt(token)
+        return user
 
 def jwt_middleware(get_response):
     def middleware(request):

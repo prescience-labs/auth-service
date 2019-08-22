@@ -11,10 +11,6 @@ class TokenViewBase(generics.GenericAPIView):
 
     serializer_class = None
 
-    def get_token_from_header(self, request):
-        token = JWT.get_token_from_auth_header(request)
-        return token
-
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
 

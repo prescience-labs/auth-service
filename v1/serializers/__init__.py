@@ -1,6 +1,2 @@
-"""Serializers
-
-Serializers for the Django Rest Framework
-https://www.django-rest-framework.org/api-guide/serializers/
-"""
+from .token import TokenObtainSerializer, TokenRefreshSerializer, TokenVerifySerializer
 from .user import UserSerializer

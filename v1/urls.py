@@ -9,6 +9,10 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from v1 import views
 
 urlpatterns = [
+    path('auth/token/', views.token_obtain, name='auth_token_obtain'),
+    path('auth/token/refresh/', views.token_refresh, name='auth_token_refresh'),
+    path('auth/token/verify/', views.token_verify, name='auth_token_verify'),
+
     path('users/', views.UserList.as_view(), name='user_list'),
     path('users/<str:uid>/', views.UserDetail.as_view(), name='user_detail'),
 ]

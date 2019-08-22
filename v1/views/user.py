@@ -39,7 +39,7 @@ class UserDetail(APIView):
 
 class CurrentUser(APIView):
     """
-    Get the currently-authenticated user.
+    Get details about the currently-authenticated user.
     """
     lookup_field = 'uid'
 

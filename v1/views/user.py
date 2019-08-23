@@ -34,7 +34,7 @@ class CurrentUser(generics.GenericAPIView):
     """
     lookup_field = 'uid'
 
-    def get(self, request, format=None):
+    def get(self, request):
         try:
             user = JWT.get_user_from_auth_header(request)
             if user is None:

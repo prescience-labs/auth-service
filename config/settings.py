@@ -156,6 +156,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 50,
     'EXCEPTION_HANDLER': 'common.services.exceptions.api_error_handler',
 }
+SWAGGER_SETTINGS = {
+    'DOC_EXPANSION': 'list',
+}
 
 
 # Logging

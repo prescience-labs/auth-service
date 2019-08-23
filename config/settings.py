@@ -164,6 +164,12 @@ SWAGGER_SETTINGS = {
 }
 
 
+# Email
+MAILGUN_API_KEY = os.getenv('MAILGUN_API_KEY')
+MAILGUN_DOMAIN_NAME = os.getenv('MAILGUN_DOMAIN_NAME')
+FROM_EMAIL = os.getenv('FROM_EMAIL', 'no-reply@example.com')
+
+
 # Logging
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'DEBUG').upper()
 LOGGING_CONFIG = None

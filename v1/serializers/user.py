@@ -15,21 +15,30 @@ class UserSerializer(serializers.ModelSerializer):
     """
     id = serializers.SerializerMethodField('get_user_id')
     email = serializers.EmailField()
-    permissions = serializers.SerializerMethodField('get_user_permissions')
 
     class Meta:
         """
         Meta class for the User serializer.
         """
         model = User
-        fields = ['id', 'email', 'permissions']
-        read_only_fields = ['permissions']
+        fields = ['id', 'email']
 
     def get_user_id(self, obj):
         """
         Return the user.uid instead of user.id
         """
         return obj.uid
+
+class CurrentUserSerializer(UserSerializer):
+    permissions = serializers.SerializerMethodField('get_user_permissions')
+
+    class Meta:
+        """
+        Meta class for the CurrentUser serializer.
+        """
+        model = User
+        fields = ['id', 'email', 'permissions']
+        read_only_fields = ['permissions']
 
     def get_user_permissions(self, obj):
         """

@@ -60,6 +60,11 @@ class TokenVerifySerializer(serializers.Serializer):
     token = serializers.CharField()
 
     def validate(self, attrs):
-        user = JWT.get_user_from_jwt(attrs['token'])
-
-        return {}
+        try:
+            user = JWT.get_user_from_jwt(attrs['token'])
+            if user is not None:
+                return {'user_id':user.uid}
+            else:
+                raise exceptions.NotAuthenticated('The token was invalid')
+        except:
+            raise exceptions.NotAuthenticated('The token was invalid')

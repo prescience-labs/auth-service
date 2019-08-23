@@ -36,12 +36,13 @@ class CurrentUser(generics.GenericAPIView):
 
     def get(self, request):
         try:
+            print('GETTING USER FROM AUTH HEADER')
             user = JWT.get_user_from_auth_header(request)
-            if user is None:
-                raise exceptions.NotFound
+            print(user)
+            if user is None or user.id is None:
+                print('!!!!!!!!!!!!')
+                raise exceptions.NotFound()
             serializer = CurrentUserSerializer(user, context={'request':request})
             return Response(serializer.data)
-        except exceptions.NotFound:
-            raise exceptions.NotFound('User was not found')
         except:
-            raise Exception('Failed to get')
+            raise exceptions.NotFound('User was not found')

@@ -1,4 +1,5 @@
 import jwt
+from django.core.exceptions import PermissionDenied
 from rest_framework import exceptions, generics, status
 from rest_framework.response import Response
 
@@ -18,8 +19,10 @@ class TokenViewBase(generics.GenericAPIView):
             serializer.is_valid(raise_exception=True)
         except jwt.InvalidTokenError:
             raise exceptions.NotAuthenticated('The token was invalid')
+        except PermissionDenied:
+            raise exceptions.NotAuthenticated('The auth credentials provided were invalid')
         except:
-            raise Exception('Error reading auth token')
+            raise exceptions.NotAuthenticated('The auth credentials provided were invalid')
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 

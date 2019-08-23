@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.db.models import ObjectDoesNotExist
 
 #pylint: disable=invalid-name
 logger = logging.getLogger(__name__)
@@ -17,10 +18,10 @@ USER_ID_CLAIM = 'user_id'
 class JWT:
     @staticmethod
     def decode(token):
-        logger.debug('JWT - decode')
+        logger.debug('JWT.decode() <<<<<<<<<<')
         try:
             payload = jwt.decode(token, settings.SECRET_KEY)
-            logger.debug(payload)
+            logger.debug(f'PAYLOAD: {payload}')
             return payload
         except:
             logger.error('Unable to decode token')
@@ -52,13 +53,19 @@ class JWT:
 
     @staticmethod
     def get_user_from_jwt(token):
+        logger.debug('JWT.get_user_from_jwt() <<<<<<<<<<')
         try:
             if token is not None:
                 payload = JWT.decode(token)
-                user = User.objects.get(uid=payload[USER_ID_CLAIM])
-                if user is not None:
+                try:
+                    user = User.objects.get(uid=payload[USER_ID_CLAIM])
+                    logger.debug(f'USER_ID: {user.uid}')
                     return user
-                else:
+                except ObjectDoesNotExist:
+                    logger.debug('NO USER FOUND')
+                    return None
+                except:
+                    logger.error('UNCAUGHT EXCEPTION')
                     return None
             else:
                 logger.debug("Token doesn't exist.")
@@ -102,6 +109,7 @@ class JWT:
     @staticmethod
     def get_user_from_auth_header(request):
         token = JWT.get_token_from_auth_header(request)
+        logger.debug(f'TOKEN: {token}')
         user = JWT.get_user_from_jwt(token)
         return user
 

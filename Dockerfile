@@ -1,9 +1,8 @@
 FROM python:3.7
 
 WORKDIR /app
-COPY Pipfile Pipfile.lock ./
-RUN pip install -U pipenv
-RUN pipenv install --system
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
 ADD . ./
 
 # Server

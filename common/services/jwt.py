@@ -61,8 +61,8 @@ class JWT:
                 else:
                     return None
             else:
-                logger.debug("Token doesn't exist. We shouldn't see this message.")
-                return None
+                logger.debug("Token doesn't exist.")
+                None
         except:
             raise jwt.InvalidTokenError('The provided token was invalid')
 
@@ -108,17 +108,15 @@ class JWT:
 def jwt_middleware(get_response):
     def middleware(request):
         try:
-            print('Getting token from auth header')
-            token = JWT.get_token_from_auth_header(request)
-            print(token)
-            print('Getting user')
-            user = JWT.get_user_from_jwt(token)
-            print(user)
-
-            # request._cached_user is used by
-            # django.contrib.auth.get_user to
-            # set the request.user object
-            request._cached_user = user
+            if request._cached_user is not None:
+                token = JWT.get_token_from_auth_header(request)
+                user = JWT.get_user_from_jwt(token)
+                if user is None:
+                    user = AnonymousUser()
+                # request._cached_user is used by
+                # django.contrib.auth.get_user to
+                # set the request.user object
+                request._cached_user = user
         except:
             pass
 

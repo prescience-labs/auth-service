@@ -22,7 +22,7 @@ class JWT:
         This does not perform any user validation, only signature validation.
         """
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY)
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
             logger.debug(f'PAYLOAD: {payload}')
             return payload
         except:
@@ -37,7 +37,7 @@ class JWT:
         payload['iat'] = datetime.utcnow()
         payload['exp'] = datetime.utcnow() + timedelta(days=token_expiration_days)
         logger.debug(f'JWT encode, payload: {str(payload)}')
-        token = jwt.encode(payload, settings.SECRET_KEY)
+        token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
         return token.decode('UTF-8')
 
     @staticmethod

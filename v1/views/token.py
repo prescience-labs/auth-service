@@ -3,7 +3,7 @@ from django.core.exceptions import PermissionDenied
 from rest_framework import exceptions, generics, status
 from rest_framework.response import Response
 
-from common.services.jwt import JWT
+from common.services.token import JWT
 from v1.serializers import TokenObtainSerializer, TokenRefreshSerializer, TokenVerifySerializer
 
 class TokenViewBase(generics.GenericAPIView):

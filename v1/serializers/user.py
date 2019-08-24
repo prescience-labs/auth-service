@@ -3,7 +3,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from common.services.jwt import JWT
+from common.services.token import JWT
 
 #pylint: disable=invalid-name
 User = get_user_model()

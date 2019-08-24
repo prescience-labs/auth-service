@@ -2,7 +2,7 @@
 from rest_framework import exceptions, serializers
 from django.contrib.auth import authenticate, get_user_model
 
-from common.services.jwt import JWT
+from common.services.token import JWT
 
 User = get_user_model()
 

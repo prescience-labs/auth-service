@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 
-from common.services.jwt import JWT
+from common.services.token import JWT
 from v1.serializers import UserSerializer, CurrentUserSerializer
 
 #pylint: disable=invalid-name

@@ -18,7 +18,9 @@ USER_ID_CLAIM = 'user_id'
 class JWT:
     @staticmethod
     def decode(token):
-        logger.debug('JWT.decode() <<<<<<<<<<')
+        """Decode the given token with the secret key.
+        This does not perform any user validation, only signature validation.
+        """
         try:
             payload = jwt.decode(token, settings.SECRET_KEY)
             logger.debug(f'PAYLOAD: {payload}')
@@ -42,8 +44,7 @@ class JWT:
     def refresh(token):
         """Attempt to refresh the provided token."""
         try:
-            decoded = jwt.decode(token, settings.SECRET_KEY)
-            user = User.objects.get(uid=decoded['user']['id'])
+            user = JWT.get_user_from_jwt(token)
             return JWT.get_user_token(user)
         except jwt.ExpiredSignatureError:
             raise Exception('Token refresh failed. The provided token was expired.')
@@ -53,12 +54,15 @@ class JWT:
 
     @staticmethod
     def get_user_from_jwt(token):
-        logger.debug('JWT.get_user_from_jwt() <<<<<<<<<<')
         try:
             if token is not None:
                 payload = JWT.decode(token)
                 try:
                     user = User.objects.get(uid=payload[USER_ID_CLAIM])
+                    jwt_timestamp = payload['iat']
+                    user_token_valid_timestamp = None if user.token_valid_timestamp is None else datetime.timestamp(user.token_valid_timestamp)
+                    if user_token_valid_timestamp is not None and user_token_valid_timestamp >= jwt_timestamp:
+                        raise jwt.InvalidTokenError
                     logger.debug(f'USER_ID: {user.uid}')
                     return user
                 except ObjectDoesNotExist:

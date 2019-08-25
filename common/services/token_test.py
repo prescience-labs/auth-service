@@ -7,15 +7,15 @@ import pytest
 from common.services.token import JWT
 
 payload = {
-    'one': 'two'
+    'one': 'two',
 }
-valid_payload = payload
-expired_payload = payload
-expired_payload['exp'] = datetime.datetime.now() - datetime.timedelta(minutes=15)
+valid_payload = dict(payload)
+expired_payload = dict(payload)
+expired_payload['exp'] = int(datetime.datetime.timestamp(datetime.datetime.utcnow() - datetime.timedelta(minutes=15)))
 
-valid_token = jwt.encode(valid_payload, settings.SECRET_KEY, algorithm='HS256')
-invalid_token_wrong_secret_key = jwt.encode(valid_payload, f'{settings.SECRET_KEY}_wrong', algorithm='HS256')
-invalid_token_expired = jwt.encode(expired_payload, settings.SECRET_KEY, algorithm='HS256')
+valid_token = jwt.encode(valid_payload, settings.SECRET_KEY, algorithm='HS256').decode('UTF-8')
+invalid_token_wrong_secret_key = jwt.encode(valid_payload, f'{settings.SECRET_KEY}_wrong', algorithm='HS256').decode('UTF-8')
+invalid_token_expired = jwt.encode(expired_payload, settings.SECRET_KEY, algorithm='HS256').decode('UTF-8')
 
 def test_valid_token_passes_decode():
     """A validly-signed and unexpired token will be parsed without fail."""

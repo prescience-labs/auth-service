@@ -20,6 +20,15 @@ class User(AbstractUser):
         help_text=_('Tokens with an `iat` field before this timestamp will not validate.'),
     )
 
+    # Password reset
+    password_reset_token = models.UUIDField(_('password reset token'), null=True, blank=True)
+    password_reset_expiration = models.DateTimeField(
+        _('password reset expiration'),
+        null=True,
+        blank=True,
+        help_text=_('Password reset tokens will only be valid until this timestamp.'),
+    )
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 

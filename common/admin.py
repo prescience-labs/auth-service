@@ -22,6 +22,7 @@ class CustomUserAdmin(UserAdmin):
     )
     fieldsets = (
         (None, {'fields': ('username', 'password', 'token_valid_timestamp')}),
+        (_('Password reset'), {'fields': ('password_reset_token', 'password_reset_expiration')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
         (_('Permissions'), {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),

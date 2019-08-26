@@ -96,9 +96,11 @@ DATABASES = {
 DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 
 
+# Authentication
+PASSWORD_RESET_EXPIRATION_MINUTES = 60
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -165,9 +167,12 @@ SWAGGER_SETTINGS = {
 
 
 # Email
-MAILGUN_API_KEY = os.getenv('MAILGUN_API_KEY')
-MAILGUN_DOMAIN_NAME = os.getenv('MAILGUN_DOMAIN_NAME')
-FROM_EMAIL = os.getenv('FROM_EMAIL', 'no-reply@example.com')
+DEFAULT_FROM_EMAIL = os.getenv('FROM_EMAIL', 'no-reply@example.com')
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.ethereal.email')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'tpll5wiiajplpxd6@ethereal.email')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'KPh5WESzRuQETtRgHq')
+EMAIL_HOST_USE_SSL = os.getenv('EMAIL_HOST_USE_SSL', 'false').lower() == 'true'
 
 
 # Logging

@@ -3,6 +3,9 @@
 This user model uses a uuid on the User.uid field.
 """
 import uuid
+
+from datetime import datetime, timedelta
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import pre_save
 from django.db import models
@@ -31,6 +34,12 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
+
+    def initiate_password_reset(self):
+        self.password_reset_token = uuid.uuid4()
+        self.password_reset_expiration = datetime.utcnow() + timedelta(minutes=settings.PASSWORD_RESET_EXPIRATION_MINUTES)
+        self.save()
+
 
 #pylint: disable=unused-argument
 @receiver(pre_save, sender=User)

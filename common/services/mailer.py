@@ -1,28 +1,18 @@
-import requests
 from django.conf import settings
+from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.template.loader import get_template
 
-class Email:
-    api_key = settings.MAILGUN_API_KEY
-    domain_name = settings.MAILGUN_DOMAIN_NAME
-    from_email = settings.FROM_EMAIL
-    to_email = ''
-    subject = ''
-    content = ''
+def send_password_reset_email(user, from_email=settings.DEFAULT_FROM_EMAIL):
+    """Send a password reset email to the given user."""
+    template = get_template('common/emails/password_reset.html')
+    html_email = template.render({'button_link':user.password_reset_token})
 
-    def __init__(self, to_email, subject, content, from_email=settings.FROM_EMAIL):
-        self.to_email = to_email
-        self.subject = subject
-        self.content = content
-        self.from_email = from_email
-
-    def send(self):
-        return requests.post(
-            f'https://api.mailgun.net/v3/{self.domain_name}/messages',
-            auth=('api', self.api_key),
-            data={
-                'from': self.from_email,
-                'to': [self.to_email],
-                'subject': self.subject,
-                'text': self.content,
-            }
-        )
+    email = EmailMultiAlternatives(
+        to=[user.email],
+        subject='ACTION REQUIRED: Password reset',
+        body=f"Someone initiated a password reset for you. If it wasn't you, don't worry about it. If it was, use this link to reset your password: {user.password_reset_token}",
+        from_email=from_email,
+    )
+    email.attach_alternative(html_email, 'text/html')
+    email.content_subtype = 'html'
+    return email.send()

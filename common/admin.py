@@ -4,6 +4,7 @@ Django admin site settings for the Common app.
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserCreationForm
+from django.utils.translation import gettext, gettext_lazy as _
 from common.models import User
 
 class UserCreateForm(UserCreationForm):
@@ -18,6 +19,15 @@ class CustomUserAdmin(UserAdmin):
             'classes': ('wide',),
             'fields': ('email', 'password1', 'password2'),
         }),
+    )
+    fieldsets = (
+        (None, {'fields': ('username', 'password', 'token_valid_timestamp')}),
+        (_('Password reset'), {'fields': ('password_reset_token', 'password_reset_expiration')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+        (_('Permissions'), {
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+        }),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
 
 admin.site.register(User, CustomUserAdmin)

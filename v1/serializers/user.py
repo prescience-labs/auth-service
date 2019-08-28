@@ -3,7 +3,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from common.services.jwt import JWT
+from common.services.token import JWT
 
 #pylint: disable=invalid-name
 User = get_user_model()
@@ -15,19 +15,27 @@ class UserSerializer(serializers.ModelSerializer):
     """
     id = serializers.SerializerMethodField('get_user_id')
     email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         """
         Meta class for the User serializer.
         """
         model = User
-        fields = ['id', 'email']
+        fields = ('id', 'email', 'password',)
 
     def get_user_id(self, obj):
         """
         Return the user.uid instead of user.id
         """
         return obj.uid
+
+    def create(self, validated_data):
+        return User.objects.create_user(
+            email=validated_data.get('email'),
+            username=validated_data.get('email'),
+            password=validated_data.get('password'),
+        )
 
 class CurrentUserSerializer(UserSerializer):
     permissions = serializers.SerializerMethodField('get_user_permissions')

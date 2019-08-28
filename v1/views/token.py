@@ -7,14 +7,12 @@ from common.services.token import JWT
 from v1.serializers import TokenObtainSerializer, TokenRefreshSerializer, TokenVerifySerializer
 
 class TokenViewBase(generics.GenericAPIView):
-    permission_classes = ()
-    authentication_classes = ()
-
-    serializer_class = None
+    permission_classes      = ()
+    authentication_classes  = ()
+    serializer_class        = None
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-
         try:
             serializer.is_valid(raise_exception=True)
         except jwt.InvalidTokenError:

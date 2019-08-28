@@ -28,8 +28,11 @@ class AuthPasswordResetFinal(generics.UpdateAPIView):
         try:
             data = dict(request.data)
             data['token'] = str(kwargs['password_reset_token'])
+            print(data)
             serializer = self.get_serializer(data=data)
             serializer.is_valid(raise_exception=True)
+        except exceptions.NotFound:
+            raise exceptions.NotFound("That password reset token wasn't valid.")
         except:
             raise exceptions.NotAcceptable("That password reset token wasn't valid.")
         return Response(serializer.validated_data, status=status.HTTP_200_OK)

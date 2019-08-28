@@ -14,7 +14,7 @@ urlpatterns = [
     path('/auth/token/verify', views.token_verify, name='auth_token_verify'),
     path('/auth/current_user', views.CurrentUser.as_view(), name='current_user'),
     path('/auth/password_reset', views.AuthPasswordResetInit.as_view(), name='password_reset'),
-    path('/auth/password_reset/<uuid:password_reset_token>', views.AuthPasswordResetFinal.as_view(), name='password_reset_final'),
+    path('/auth/password_reset/submit', views.AuthPasswordResetFinal.as_view(), name='password_reset_final'),
 
     path('/users', views.UserList.as_view(), name='user_list'),
     path('/users/<uuid:uid>', views.UserDetail.as_view(), name='user_detail'),

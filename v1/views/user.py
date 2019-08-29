@@ -13,22 +13,16 @@ User = get_user_model()
 #pylint: enable=invalid-name
 
 class UserList(generics.ListCreateAPIView):
-    """
-    List all users.
-    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'uid'
 
 class UserDetail(generics.RetrieveAPIView):
-    """
-    Get a single user.
-    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'uid'
 
-class CurrentUser(generics.GenericAPIView):
+class CurrentUser(generics.RetrieveAPIView):
     """
     Get details about the currently-authenticated user.
     """

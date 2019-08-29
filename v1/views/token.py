@@ -26,29 +26,20 @@ class TokenViewBase(generics.GenericAPIView):
 
 
 class TokenObtainView(TokenViewBase):
-    """
-    Takes a set of user credentials and returns an access and refresh JSON web
-    token pair to prove the authentication of those credentials.
-    """
+    """Takes a set of user credentials and returns an access and refresh JSON web token pair to prove the authentication of those credentials."""
     serializer_class = TokenObtainSerializer
 
 token_obtain = TokenObtainView.as_view()
 
 class TokenRefreshView(TokenViewBase):
-    """
-    Takes a refresh type JSON web token and returns an access type JSON web
-    token if the refresh token is valid.
-    """
+    """Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid."""
     serializer_class = TokenRefreshSerializer
 
 
 token_refresh = TokenRefreshView.as_view()
 
 class TokenVerifyView(TokenViewBase):
-    """
-    Takes a token and indicates if it is valid.  This view provides no
-    information about a token's fitness for a particular use.
-    """
+    """Takes a token and indicates if it is valid.  This view provides no information about a token's fitness for a particular use."""
     serializer_class = TokenVerifySerializer
 
 token_verify = TokenVerifyView.as_view()

@@ -167,6 +167,9 @@ logging.config.dictConfig({
         },
         'django.utils.autoreload': {
             'level': 'INFO',
-        }
+        },
+        'django.db.backends': {
+            'level': 'INFO',
+        },
     },
 })

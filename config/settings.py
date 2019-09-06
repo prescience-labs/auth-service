@@ -7,11 +7,11 @@ from django.utils.log import DEFAULT_LOGGING
 from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv())
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SEVEN_DAYS  = 604800 # seconds
+BASE_DIR    = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY                  = os.getenv('SECRET_KEY')
 DEBUG                       = os.getenv('DEBUG', 'false').lower() == 'true'
-
 ALLOWED_HOSTS               = os.getenv('ALLOWED_HOSTS', 'localhost,0.0.0.0').split(',')
 CORS_ORIGIN_ALLOW_ALL       = os.getenv('CORS_ORIGIN_ALLOW_ALL', 'false').lower() == 'true'
 CORS_ORIGIN_WHITELIST       = os.getenv('CORS_ORIGIN_WHITELIST').split(',') if os.getenv('CORS_ORIGIN_WHITELIST') else []
@@ -26,19 +26,27 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
+    'oauth2_provider',
     'corsheaders',
 
     'common.apps.CommonConfig',
     'v1.apps.V1Config',
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'oauth2_provider.backends.OAuth2Backend',
+    # Uncomment following if you want to access the admin
+    'django.contrib.auth.backends.ModelBackend'
+)
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'common.services.token.jwt_middleware',
+    # 'common.services.token.jwt_middleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -68,15 +76,31 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE':   'django.db.backends.sqlite3',
+        'NAME':     os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 
 
 # Authentication
-PASSWORD_RESET_EXPIRATION_MINUTES = 60
+AUTH_USER_MODEL                     = 'common.User'
+PASSWORD_RESET_EXPIRATION_MINUTES   = 60
+TOKEN_EXPIRATION_PERIOD             = 7 # days
+# LOGIN_URL                           = 'auth_login'
+
+OAUTH2_PROVIDER = {
+    'SCOPES': {
+        'read':             'Read scope',
+        'write':            'Write scope',
+        'introspection':    'Introspect token scope',
+    },
+
+    'CLIENT_ID_GENERATOR_CLASS':            'oauth2_provider.generators.ClientIdGenerator',
+    'ALLOWED_REDIRECT_URI_SCHEMES':         ['http', 'https'],
+    'AUTHORIZATION_CODE_EXPIRE_SECONDS':    600,
+    'REFRESH_TOKEN_EXPIRE_SECONDS':         SEVEN_DAYS,
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -105,14 +129,9 @@ USE_TZ          = True
 
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
+STATIC_URL  = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-AUTH_USER_MODEL = 'common.User'
-
-# JWT
-# Tokens expire in 7 days by default
-TOKEN_EXPIRATION_PERIOD = 7
 
 # Django Rest Framework
 # https://www.django-rest-framework.org/
@@ -127,8 +146,8 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 50,
-    'EXCEPTION_HANDLER': 'common.services.exceptions.api_error_handler',
+    'PAGE_SIZE':                50,
+    'EXCEPTION_HANDLER':        'common.services.exceptions.api_error_handler',
 }
 SWAGGER_SETTINGS = {
     'DOC_EXPANSION': 'list',
@@ -155,18 +174,21 @@ logging.config.dictConfig({
     },
     'handlers': {
         'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'console',
+            'class':        'logging.StreamHandler',
+            'formatter':    'console',
         },
     },
     'loggers': {
         # root logger
         '': {
-            'level': LOG_LEVEL,
-            'handlers': ['console'],
+            'level':        LOG_LEVEL,
+            'handlers':     ['console'],
         },
         'django.utils.autoreload': {
             'level': 'INFO',
-        }
+        },
+        'django.db.backends': {
+            'level': 'INFO',
+        },
     },
 })

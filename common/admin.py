@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext, gettext_lazy as _
-from common.models import User
+from common.models import Team, User
 
 class UserCreateForm(UserCreationForm):
     class Meta:
@@ -29,5 +29,6 @@ class CustomUserAdmin(UserAdmin):
         }),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
-
 admin.site.register(User, CustomUserAdmin)
+
+admin.site.register(Team)

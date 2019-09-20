@@ -26,27 +26,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
-    'oauth2_provider',
     'corsheaders',
 
     'common.apps.CommonConfig',
     'v1.apps.V1Config',
 ]
 
-AUTHENTICATION_BACKENDS = (
-    'oauth2_provider.backends.OAuth2Backend',
-    # Uncomment following if you want to access the admin
-    'django.contrib.auth.backends.ModelBackend'
-)
-
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    # 'common.services.token.jwt_middleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -81,26 +72,6 @@ DATABASES = {
     }
 }
 DATABASES['default'] = dj_database_url.config(conn_max_age=600)
-
-
-# Authentication
-AUTH_USER_MODEL                     = 'common.User'
-PASSWORD_RESET_EXPIRATION_MINUTES   = 60
-TOKEN_EXPIRATION_PERIOD             = 7 # days
-# LOGIN_URL                           = 'auth_login'
-
-OAUTH2_PROVIDER = {
-    'SCOPES': {
-        'read':             'Read scope',
-        'write':            'Write scope',
-        'introspection':    'Introspect token scope',
-    },
-
-    'CLIENT_ID_GENERATOR_CLASS':            'oauth2_provider.generators.ClientIdGenerator',
-    'ALLOWED_REDIRECT_URI_SCHEMES':         ['http', 'https'],
-    'AUTHORIZATION_CODE_EXPIRE_SECONDS':    600,
-    'REFRESH_TOKEN_EXPIRE_SECONDS':         SEVEN_DAYS,
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

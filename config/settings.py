@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_swagger',
     'corsheaders',
 
     'common.apps.CommonConfig',
@@ -118,19 +117,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE':                50,
-    'EXCEPTION_HANDLER':        'common.services.exceptions.api_error_handler',
 }
-SWAGGER_SETTINGS = {
-    'DOC_EXPANSION': 'list',
-}
-
-# Email
-DEFAULT_FROM_EMAIL  = os.getenv('FROM_EMAIL', 'no-reply@example.com')
-EMAIL_HOST          = os.getenv('EMAIL_HOST', 'smtp.ethereal.email')
-EMAIL_PORT          = int(os.getenv('EMAIL_PORT', 587))
-EMAIL_HOST_USER     = os.getenv('EMAIL_HOST_USER', 'tpll5wiiajplpxd6@ethereal.email')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'KPh5WESzRuQETtRgHq')
-EMAIL_HOST_USE_SSL  = os.getenv('EMAIL_HOST_USE_SSL', 'false').lower() == 'true'
 
 # Logging
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'DEBUG').upper()
@@ -163,3 +150,11 @@ logging.config.dictConfig({
         },
     },
 })
+
+# Auth0
+AUTH0 = {
+    'domain': os.getenv('AUTH0_DOMAIN'),
+    'client_id': os.getenv('AUTH0_CLIENT_ID'),
+    'client_secret': os.getenv('AUTH0_CLIENT_SECRET'),
+    'audience': os.getenv('AUTH0_AUDIENCE'),
+}

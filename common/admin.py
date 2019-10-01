@@ -4,9 +4,15 @@ from common.models import AppUser, Team
 
 readonly_fields_base = ('id', 'created_at', 'updated_at',)
 
+class TeamMembershipInline(admin.TabularInline):
+    model = Team.users.through
+
 class AppUserAdmin(admin.ModelAdmin):
     list_display    = ('id', 'provider_id',)
     search_fields   = ('id', 'provider_id',)
+    inlines         = [
+        TeamMembershipInline,
+    ]
     readonly_fields = readonly_fields_base
 admin.site.register(AppUser, AppUserAdmin)
 

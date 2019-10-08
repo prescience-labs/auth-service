@@ -151,10 +151,6 @@ logging.config.dictConfig({
     },
 })
 
-# Auth0
-AUTH0 = {
-    'domain': os.getenv('AUTH0_DOMAIN'),
-    'client_id': os.getenv('AUTH0_CLIENT_ID'),
-    'client_secret': os.getenv('AUTH0_CLIENT_SECRET'),
-    'audience': os.getenv('AUTH0_AUDIENCE'),
-}
+# Authentication
+AUTH_USER_MODEL                     = 'common.User'
+PASSWORD_RESET_EXPIRATION_MINUTES   = 60

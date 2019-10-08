@@ -154,3 +154,4 @@ logging.config.dictConfig({
 # Authentication
 AUTH_USER_MODEL                     = 'common.User'
 PASSWORD_RESET_EXPIRATION_MINUTES   = 60
+TOKEN_EXPIRATION_DAYS               = 7

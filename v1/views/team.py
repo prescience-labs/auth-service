@@ -1,7 +1,7 @@
 from rest_framework import generics
 
 from common.models import Team
-from v1.serializers import TeamSerializer
+from v1.serializers import TeamSerializer, TeamDetailSerializer
 
 class TeamList(generics.ListCreateAPIView):
     queryset            = Team.objects.all()
@@ -9,4 +9,4 @@ class TeamList(generics.ListCreateAPIView):
 
 class TeamDetail(generics.RetrieveUpdateAPIView):
     queryset            = Team.objects.all()
-    serializer_class    = TeamSerializer
+    serializer_class    = TeamDetailSerializer

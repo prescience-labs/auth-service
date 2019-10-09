@@ -135,5 +135,6 @@ def jwt_middleware(get_response):
             request._cached_user = user if user else AnonymousUser()
         except:
             request._cached_user = AnonymousUser()
+        logger.info(f'Current user: {request._cached_user}')
         return response
     return middleware

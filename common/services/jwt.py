@@ -100,6 +100,14 @@ class JWT:
 
     @staticmethod
     def get_token_from_auth_header(request):
+        """Extracts the user from the Authorization header
+
+        Expects the authorization header to be formatted like
+
+        ```
+        Authorization "Bearer <token>"
+        ```
+        """
         token = None
         try:
             token = request.headers['Authorization'] if request.headers['Authorization'] else None
@@ -116,21 +124,16 @@ class JWT:
         return user
 
 def jwt_middleware(get_response):
+    """Adds the current user to request._cached_user
+
+    If no user is logged in, it adds AnonymousUser to the request.
+    """
     def middleware(request):
-        try:
-            if request._cached_user is not None:
-                token = JWT.get_token_from_auth_header(request)
-                user = JWT.get_user_from_jwt(token)
-                if user is None:
-                    user = AnonymousUser()
-                # request._cached_user is used by
-                # django.contrib.auth.get_user to
-                # set the request.user object
-                request._cached_user = user
-        except:
-            pass
-
         response = get_response(request)
+        try:
+            user = JWT.get_user_from_auth_header(request)
+            request._cached_user = user if user else AnonymousUser()
+        except:
+            request._cached_user = AnonymousUser()
         return response
-
     return middleware

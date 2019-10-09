@@ -14,9 +14,3 @@ class TeamSerializer(serializers.ModelSerializer):
 
 class TeamDetailSerializer(TeamSerializer):
     users = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True)
-
-class TeamIDSerializer(serializers.ModelSerializer):
-    """Team serializer that only returns an ID"""
-    class Meta:
-        model   = Team
-        fields  = ('id',)

@@ -16,8 +16,18 @@ USER_ID_CLAIM = 'user_id'
 class JWT:
     @staticmethod
     def decode(token):
-        """Decode the given token with the secret key.
+        """Decode the given token with the secret key
+
         This does not perform any user validation, only signature validation.
+
+        Args:
+        - token (string): The token to decode
+
+        Raises:
+        - jwt.InvalidTokenError: If the token is invalid (usually signed with a different key)
+
+        Returns:
+        - dict: The token payload
         """
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
@@ -32,10 +42,10 @@ class JWT:
         payload,
         token_expiration_days=settings.TOKEN_EXPIRATION_DAYS,
     ):
-        payload['iat'] = datetime.utcnow()
-        payload['exp'] = datetime.utcnow() + timedelta(days=token_expiration_days)
+        payload['iat']  = datetime.utcnow()
+        payload['exp']  = datetime.utcnow() + timedelta(days=token_expiration_days)
+        token           = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
         logger.debug(f'JWT encode, payload: {str(payload)}')
-        token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
         return token.decode('UTF-8')
 
     @staticmethod
@@ -49,31 +59,44 @@ class JWT:
         except:
             raise Exception('Token refresh failed.')
 
-
     @staticmethod
     def get_user_from_jwt(token):
+        """Gets a user from the token
+
+        Args:
+        - token (string): The token to decode. Should be signed with the correct secret key.
+
+        Raises:
+        - jwt.InvalidTokenError: If the user's `token_valid_timestamp` is set before the token's `iat` timestamp.
+
+        Returns:
+        - User: The user from the token
+        - (None): Returned if anything failed
+        """
         try:
             if token is not None:
                 payload = JWT.decode(token)
                 try:
-                    user = User.objects.get(id=payload[USER_ID_CLAIM])
-                    jwt_timestamp = payload['iat']
+                    user            = User.objects.get(id=payload[USER_ID_CLAIM])
+                    jwt_timestamp   = payload['iat']
+
+                    # Check to see if user's token_valid_timestamp field is set and if it is set for a date before the iat date
                     user_token_valid_timestamp = None if user.token_valid_timestamp is None else datetime.timestamp(user.token_valid_timestamp)
                     if user_token_valid_timestamp is not None and user_token_valid_timestamp >= jwt_timestamp:
+                        logger.info("The user's token_valid_timestamp was before the token's iat timestamp")
                         raise jwt.InvalidTokenError
-                    logger.debug(f'USER_ID: {user.id}')
+
+                    logger.debug(f'Decoded a token with user_id: {user.id}')
                     return user
                 except ObjectDoesNotExist:
                     logger.debug('NO USER FOUND')
-                    return None
-                except:
-                    logger.error('UNCAUGHT EXCEPTION')
-                    return None
+                except Exception as e:
+                    logger.error(e)
             else:
                 logger.debug("Token doesn't exist.")
-                None
         except:
             raise jwt.InvalidTokenError('The provided token was invalid')
+        return None
 
     @staticmethod
     def get_user_token(user):

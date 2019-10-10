@@ -18,7 +18,7 @@ class TokenViewBase(generics.GenericAPIView):
         try:
             serializer.is_valid(raise_exception=True)
         except jwt.InvalidTokenError:
-            raise exceptions.NotAuthenticated('The token was invalid')
+            raise exceptions.NotAuthenticated('The token was invalid. Try grabbing a new token.')
         except PermissionDenied:
             raise exceptions.NotAuthenticated('The auth credentials provided were invalid')
         except:

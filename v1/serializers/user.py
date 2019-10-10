@@ -14,6 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields  = [
             'id',
             'email',
+            'password',
             'is_active',
             'teams',
             'created_at',
@@ -28,6 +29,11 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'password': {'write_only': True}
         }
+
+    def create(self, validated_data):
+        # remove `teams` from User.objects.create()
+        del validated_data['teams']
+        return super().create(validated_data)
 
 class UserDetailSerializer(UserSerializer):
     teams = serializers.SerializerMethodField('get_teams')

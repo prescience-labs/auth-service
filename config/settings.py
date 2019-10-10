@@ -33,6 +33,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'common.services.jwt.jwt_middleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -151,10 +152,7 @@ logging.config.dictConfig({
     },
 })
 
-# Auth0
-AUTH0 = {
-    'domain': os.getenv('AUTH0_DOMAIN'),
-    'client_id': os.getenv('AUTH0_CLIENT_ID'),
-    'client_secret': os.getenv('AUTH0_CLIENT_SECRET'),
-    'audience': os.getenv('AUTH0_AUDIENCE'),
-}
+# Authentication
+AUTH_USER_MODEL                     = 'common.User'
+PASSWORD_RESET_EXPIRATION_MINUTES   = 60
+TOKEN_EXPIRATION_DAYS               = 7

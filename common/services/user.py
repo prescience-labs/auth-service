@@ -1,6 +1,16 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import get_user_model
 
-def jwt_get_username_from_payload_handler(payload):
-    username = payload.get('sub').replace('|', '.')
-    authenticate(remote_user=username)
-    return username
+from common.models import Team
+
+User = get_user_model()
+
+def get_teams_from_user(user):
+    """Gets all teams which the user belongs to
+
+    Args:
+    - user (User): The user in question
+
+    Returns:
+    - Queryset (Team): A queryset of Team objects
+    """
+    return Team.objects.filter(users__id=user.id)

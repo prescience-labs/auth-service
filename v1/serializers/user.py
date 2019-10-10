@@ -31,9 +31,11 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        # remove `teams` from User.objects.create()
-        del validated_data['teams']
-        return super().create(validated_data)
+        return User.objects.create_user(
+            email=validated_data['email'],
+            username=validated_data['email'],
+            password=validated_data['password'],
+        )
 
 class UserDetailSerializer(UserSerializer):
     teams = serializers.SerializerMethodField('get_teams')

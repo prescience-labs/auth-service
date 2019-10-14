@@ -4,7 +4,12 @@ from rest_framework import exceptions, generics, status
 from rest_framework.response import Response
 
 from common.services.jwt import JWT
-from v1.serializers import TokenObtainSerializer, TokenRefreshSerializer, TokenVerifySerializer
+from v1.serializers import (
+    TokenObtainSerializer,
+    TokenRefreshSerializer,
+    TokenVerifySerializer,
+    ForceTokenObtainSerializer
+)
 
 class TokenViewBase(generics.GenericAPIView):
     permission_classes = ()
@@ -47,3 +52,6 @@ class TokenVerifyView(TokenViewBase):
     information about a token's fitness for a particular use.
     """
     serializer_class = TokenVerifySerializer
+
+class ForceTokenObtainView(TokenObtainView):
+    serializer_class = ForceTokenObtainSerializer

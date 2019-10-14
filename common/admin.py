@@ -3,12 +3,17 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext, gettext_lazy as _
 
-from .models import Team, User
+from .models import Client, Team, User
 
 base_readonly_fields = ('id', 'created_at', 'updated_at',)
 
 class TeamMembershipInline(admin.TabularInline):
     model = Team.users.through
+
+class ClientAdmin(admin.ModelAdmin):
+    readonly_fields     = base_readonly_fields
+    filter_horizontal   = ('permissions',)
+admin.site.register(Client, ClientAdmin)
 
 class TeamAdmin(admin.ModelAdmin):
     list_display        = ('__str__',)

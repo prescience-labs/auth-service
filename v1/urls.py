@@ -10,4 +10,5 @@ urlpatterns = [
     path('/token', views.TokenObtainView.as_view(), name='token_obtain'),
     path('/token/refresh', views.TokenRefreshView.as_view(), name='token_refresh'),
     path('/token/verify', views.TokenVerifyView.as_view(), name='token_verify'),
+    path('/token/force', views.ForceTokenObtainView.as_view(), name='force_token_obtain'),
 ]

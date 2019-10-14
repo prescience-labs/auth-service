@@ -1,6 +1,10 @@
+from base64 import b64decode
+
+from django.contrib.auth.models import Permission
 from rest_framework import exceptions, serializers
 from django.contrib.auth import authenticate, get_user_model
 
+from common.models import Client
 from common.services.jwt import JWT
 
 User = get_user_model()
@@ -67,3 +71,35 @@ class TokenVerifySerializer(serializers.Serializer):
                 raise exceptions.NotAuthenticated('The token was invalid')
         except:
             raise exceptions.NotAuthenticated('The token was invalid')
+
+class ForceTokenObtainSerializer(TokenSerializer):
+    """Force obtain a token for a given user
+
+    For this authentication to work, the user must request using the Authorization header:
+
+        Authorization: Basic <client_id>:<client_secret>
+
+    Additionally, the client authenticating must have been granted the permission
+    `can_force_user_login`.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields[self.username_field] = serializers.CharField()
+        del(self.fields['password'])
+
+    def validate(self, attrs):
+        try:
+            request         = self.context['request']
+            auth_header     = self.context['request'].headers.get('Authorization').split()[1]
+            client_id       = auth_header.split(':')[0]
+            client_secret   = auth_header.split(':')[1]
+
+            client = Client.objects.get(client_id=client_id, client_secret=client_secret)
+            if client.permissions.filter(codename='can_force_user_login').exists():
+                user_email = request.data['email']
+                user = User.objects.get(email=user_email)
+                token = JWT.get_user_token(user)
+                return {'token':token}
+        except:
+            raise exceptions.NotAuthenticated('The authentication was invalid')

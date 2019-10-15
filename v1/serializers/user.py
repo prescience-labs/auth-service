@@ -55,6 +55,7 @@ class UserSerializer(serializers.ModelSerializer):
         try:
             team = Team.objects.get(pk=validated_data['team'])
         except:
+            logger.info(f"User couldn't be added to the given team or no team was given. Creating a new team...")
             team = Team.objects.create(name=f"{user.email}'s Team")
 
         team.users.add(user)

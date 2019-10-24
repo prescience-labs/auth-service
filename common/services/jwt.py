@@ -122,7 +122,7 @@ class JWT:
             raise jwt.InvalidTokenError('The provided token was invalid')
 
     @staticmethod
-    def get_token_from_auth_header(request):
+    def get_token_from_request(request):
         """Extracts the user from the Authorization header
 
         Expects the authorization header to be formatted like
@@ -140,8 +140,8 @@ class JWT:
         return token
 
     @staticmethod
-    def get_user_from_auth_header(request):
-        token = JWT.get_token_from_auth_header(request)
+    def get_user_from_request(request):
+        token = JWT.get_token_from_request(request)
         logger.debug(f'TOKEN: {token}')
         user = JWT.get_user_from_jwt(token)
         return user
@@ -154,7 +154,7 @@ def jwt_middleware(get_response):
     def middleware(request):
         response = get_response(request)
         try:
-            user = JWT.get_user_from_auth_header(request)
+            user = JWT.get_user_from_request(request)
             request._cached_user = user if user else AnonymousUser()
         except:
             request._cached_user = AnonymousUser()

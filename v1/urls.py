@@ -2,10 +2,13 @@ from django.urls import path, include
 from v1 import views
 
 urlpatterns = [
+    path('/clients/current', views.ClientFromBasicAuth.as_view(), name='client_current'),
+
     path('/teams', views.TeamList.as_view(), name='team_list'),
     path('/teams/<uuid:pk>', views.TeamDetail.as_view(), name='team_detail'),
 
     path('/users', views.UserList.as_view(), name='users'),
+    path('/users/current', views.UserFromTokenDetail.as_view(), name='user_current'),
     path('/users/<uuid:pk>', views.UserDetail.as_view(), name='user_detail'),
 
     path('/token', views.TokenObtainView.as_view(), name='token_obtain'),

@@ -34,7 +34,7 @@ class JWT:
             logger.debug(f'PAYLOAD: {payload}')
             return payload
         except:
-            logger.error('Unable to decode token')
+            logger.warning('Unable to decode token')
             raise jwt.InvalidTokenError('The provided token was invalid')
 
     @staticmethod
@@ -133,8 +133,9 @@ class JWT:
         """
         token = None
         try:
-            token = request.headers['Authorization'] if request.headers['Authorization'] else None
-            token = str.split(token)[1]
+            header = request.headers.get('Authorization').split()
+            if header[0].lower() == 'bearer':
+                token = header[1]
         except KeyError:
             pass
         return token

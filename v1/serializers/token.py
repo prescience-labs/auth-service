@@ -15,8 +15,8 @@ class TokenSerializer(serializers.Serializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields[self.username_field] = serializers.CharField()
-        self.fields['password'] = serializers.CharField()
+        self.fields[self.username_field]    = serializers.CharField()
+        self.fields['password']             = serializers.CharField()
 
     def validate(self, attrs):
         authenticate_kwargs = {

@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 User = get_user_model()
 
 USER_ID_CLAIM = 'user_id'
+TEAM_ID_CLAIM = 'team_id'
 
 class JWT:
     @staticmethod
@@ -99,12 +100,13 @@ class JWT:
         return None
 
     @staticmethod
-    def get_user_token(user):
+    def get_user_token(user, team=None):
         """
         Decide what goes into a token when a user requests one.
         """
         return JWT.encode({
             USER_ID_CLAIM: str(user.id),
+            TEAM_ID_CLAIM: str(team.id) if team else str(user.default_team.id),
         })
 
     @staticmethod

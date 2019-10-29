@@ -1,3 +1,5 @@
+import logging
+
 import jwt
 from django.core.exceptions import PermissionDenied
 from rest_framework import exceptions, generics, status
@@ -11,11 +13,12 @@ from v1.serializers import (
     ForceTokenObtainSerializer
 )
 
-class TokenViewBase(generics.GenericAPIView):
-    permission_classes = ()
-    authentication_classes = ()
+logger = logging.getLogger(__name__)
 
-    serializer_class = None
+class TokenViewBase(generics.GenericAPIView):
+    permission_classes      = ()
+    authentication_classes  = ()
+    serializer_class        = None
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -26,9 +29,9 @@ class TokenViewBase(generics.GenericAPIView):
             raise exceptions.NotAuthenticated('The token was invalid. Try grabbing a new token.')
         except PermissionDenied:
             raise exceptions.NotAuthenticated('The auth credentials provided were invalid')
-        except:
+        except Exception as e:
+            logger.error(f'Error serializing the token: {e}')
             raise exceptions.NotAuthenticated('The auth credentials provided were invalid')
-
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 

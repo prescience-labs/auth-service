@@ -4,20 +4,28 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from common.models import Team
+from common.models import DefaultTeam, Team
 from .team import TeamSerializer
 
 logger  = logging.getLogger(__name__)
 User    = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
-    team    = serializers.UUIDField(required=False, default=None)
-    teams   = serializers.SerializerMethodField('get_teams')
+    team            = serializers.UUIDField(required=False, default=None)
+    teams           = serializers.SerializerMethodField('get_teams')
+    default_team    = serializers.SerializerMethodField('get_default_team')
 
     def get_teams(self, obj):
         """Forces the `teams` field to return a list of IDs"""
         teams_queryset = Team.objects.filter(users__id=obj.id)
         return [t.id for t in teams_queryset]
+
+    def get_default_team(self, obj):
+        try:
+            return DefaultTeam.objects.get(user=obj).team.id
+        except ObjectDoesNotExist:
+            return None
+
 
     class Meta:
         model   = User
@@ -28,6 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
             'is_active',
             'team',
             'teams',
+            'default_team',
             'created_at',
             'updated_at',
         ]

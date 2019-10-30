@@ -21,6 +21,9 @@ class DefaultTeam(BaseModel):
         if not self.team.users.filter(id=self.user.id).exists():
             raise ValidationError(f"User {self.user} doesn't belong to team {self.team}")
 
+    def __str__(self):
+        return f'{self.user}: {self.team}'
+
 def set_default_team_if_not_set(sender, instance, action, **kwargs):
     """Set the default team for each team user if it doesn't already exist.
 
@@ -28,9 +31,18 @@ def set_default_team_if_not_set(sender, instance, action, **kwargs):
     (added/removed).This could lead to inefficiencies in the future when teams
     grow large, but for now it's great for integrity.
     """
-    for user in instance.users.all():
-        try:
-            DefaultTeam.objects.create(user=user, team=instance)
-        except IntegrityError:
-            logger.info(f"Can't set default team for user {user}, it already exists.")
+    print('set_default_team_if_not_set')
+    if type(instance) is Team:
+        for user in instance.users.all():
+            try:
+                DefaultTeam.objects.create(user=user, team=instance)
+            except IntegrityError:
+                logger.info(f"Can't set default team for user {user}, it already exists.")
+    elif type(instance) is User:
+        if len(instance.teams.all()) > 0:
+            try:
+                DefaultTeam.objects.create(user=instance, team=instance.teams.all()[0])
+            except IntegrityError:
+                logger.info(f"Can't set default team for user {instance}, it already exists.")
+m2m_changed.connect(set_default_team_if_not_set, sender=User.teams.through)
 m2m_changed.connect(set_default_team_if_not_set, sender=Team.users.through)

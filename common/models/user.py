@@ -37,7 +37,6 @@ class User(BaseModel, AbstractUser):
         self.password_reset_expiration = datetime.utcnow() + timedelta(minutes=settings.PASSWORD_RESET_EXPIRATION_MINUTES)
         self.save()
 
-
 #pylint: disable=unused-argument
 @receiver(pre_save, sender=User)
 def force_username_email_parity(sender, instance, **kwargs):

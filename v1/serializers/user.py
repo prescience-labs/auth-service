@@ -58,16 +58,12 @@ class UserSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
         )
 
-        # Attempt to add the user to the team.
-        # If no team was listed, or if the user couldn't be added to the team,
-        # create a new team for the user.
+        # Attempt to add the user to the team, if it exists.
         try:
             team = Team.objects.get(pk=validated_data['team'])
         except:
-            logger.info(f"User couldn't be added to the given team or no team was given. Creating a new team...")
-            team = Team.objects.create(name=f"{user.email}'s Team")
+            logger.info(f"User couldn't be added to the given team or no team was given.")
 
-        team.users.add(user)
         return user
 
 class UserDetailSerializer(UserSerializer):

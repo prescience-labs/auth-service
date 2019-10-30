@@ -104,9 +104,17 @@ class JWT:
         """
         Decide what goes into a token when a user requests one.
         """
+        default_user_id = None
+        try:
+            if team:
+                default_user_id = str(team.id)
+            else:
+                default_user_id = str(user.default_team.id)
+        except:
+            logger.info(f"User {user} doesn't have a team to serialize")
         return JWT.encode({
             USER_ID_CLAIM: str(user.id),
-            TEAM_ID_CLAIM: str(team.id) if team else str(user.default_team.id),
+            TEAM_ID_CLAIM: default_user_id,
         })
 
     @staticmethod

@@ -36,7 +36,9 @@ class TokenSerializer(serializers.Serializer):
                 'no_active_account',
             )
 
-        token = JWT.get_user_token(self.user)
+
+        team    = attrs.get('team', None)
+        token   = JWT.get_user_token(self.user, team)
         return {'token':token}
 
     @classmethod
@@ -44,9 +46,13 @@ class TokenSerializer(serializers.Serializer):
         raise NotImplementedError('Must implement `get_token` method for `TokenSerializer` subclasses')
 
 class TokenObtainSerializer(TokenSerializer):
+    def __init__(self, *args, **kwargs):
+        self.fields['team'] = serializers.CharField()
+        super().__init__(*args, **kwargs)
+
     @classmethod
-    def get_token(cls, user):
-        return JWT.get_user_token(user)
+    def get_token(cls, user, team):
+        return JWT.get_user_token(user, team)
 
     def validate(self, attrs):
         data = super().validate(attrs)

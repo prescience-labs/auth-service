@@ -3,9 +3,13 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext, gettext_lazy as _
 
-from .models import Client, Team, User
+from .models import Client, DefaultTeam, Team, User
 
 base_readonly_fields = ('id', 'created_at', 'updated_at',)
+
+class DefaultTeamInline(admin.StackedInline):
+    model   = DefaultTeam
+    fk_name = 'user'
 
 class TeamMembershipInline(admin.TabularInline):
     model = Team.users.through
@@ -36,7 +40,7 @@ class CustomUserAdmin(UserAdmin):
         }),
     )
     fieldsets = (
-        (None, {'fields': ('username', 'password', 'token_valid_timestamp')}),
+        (None, {'fields': ('username', 'password', 'token_valid_timestamp',)}),
         (_('Password reset'), {'fields': ('password_reset_token', 'password_reset_expiration')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
         (_('Permissions'), {
@@ -46,5 +50,6 @@ class CustomUserAdmin(UserAdmin):
     )
     inlines         = [
         TeamMembershipInline,
+        DefaultTeamInline,
     ]
 admin.site.register(User, CustomUserAdmin)

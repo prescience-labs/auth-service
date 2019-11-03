@@ -13,16 +13,16 @@ from .base import BaseModel
 class User(BaseModel, AbstractUser):
     uid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     email = models.EmailField(_('email address'), unique=True)
+
+    # Password reset
     token_valid_timestamp = models.DateTimeField(
         _('token valid timestamp'),
         null=True,
         blank=True,
         help_text=_('Tokens with an `iat` field before this timestamp will not validate.'),
     )
-
-    # Password reset
-    password_reset_token = models.UUIDField(_('password reset token'), null=True, blank=True)
-    password_reset_expiration = models.DateTimeField(
+    password_reset_token        = models.UUIDField(_('password reset token'), null=True, blank=True)
+    password_reset_expiration   = models.DateTimeField(
         _('password reset expiration'),
         null=True,
         blank=True,
@@ -36,7 +36,6 @@ class User(BaseModel, AbstractUser):
         self.password_reset_token = uuid.uuid4()
         self.password_reset_expiration = datetime.utcnow() + timedelta(minutes=settings.PASSWORD_RESET_EXPIRATION_MINUTES)
         self.save()
-
 
 #pylint: disable=unused-argument
 @receiver(pre_save, sender=User)

@@ -73,3 +73,12 @@ class UserDetailSerializer(UserSerializer):
         """Forces the `teams` field to return a list of IDs"""
         teams_queryset = Team.objects.filter(users__id=obj.id)
         return [t.id for t in teams_queryset]
+
+class CurrentUserSerializer(UserDetailSerializer):
+    active_team = serializers.SerializerMethodField('get_active_team')
+
+    class Meta(UserDetailSerializer.Meta):
+        fields = UserDetailSerializer.Meta.fields + ['active_team',]
+
+    def get_active_team(self, obj):
+        return self.context.get('active_team', None)

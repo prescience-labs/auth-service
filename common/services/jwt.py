@@ -8,10 +8,13 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.db.models import ObjectDoesNotExist
 
+from common.models import Team
+
 logger = logging.getLogger(__name__)
 User = get_user_model()
 
 USER_ID_CLAIM = 'user_id'
+TEAM_ID_CLAIM = 'team_id'
 
 class JWT:
     @staticmethod
@@ -99,12 +102,28 @@ class JWT:
         return None
 
     @staticmethod
-    def get_user_token(user):
+    def get_user_token(user, team=None):
         """
         Decide what goes into a token when a user requests one.
         """
+        default_team_id = None
+        try:
+            if team:
+                if type(team) is str:
+                    logger.debug(f'Team sent as a string: {team}. Converting to a Team object...')
+                    team = Team.objects.get(pk=team)
+
+                if team in user.teams.all():
+                    default_team_id = str(team.id)
+                else:
+                    logger.warning(f"Tried to create an auth token with user {user} and team {team} but that user doesn't belong to that team.")
+            else:
+                default_team_id = str(user.default_team.id)
+        except Exception as e:
+            logger.info(f"User {user} doesn't have a team to serialize (error thrown: {e})")
         return JWT.encode({
             USER_ID_CLAIM: str(user.id),
+            TEAM_ID_CLAIM: default_team_id,
         })
 
     @staticmethod

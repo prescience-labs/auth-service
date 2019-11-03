@@ -106,24 +106,26 @@ class JWT:
         """
         Decide what goes into a token when a user requests one.
         """
-        default_team_id = None
+        team_id = None
         try:
+            print(team)
             if team:
                 if type(team) is str:
                     logger.debug(f'Team sent as a string: {team}. Converting to a Team object...')
                     team = Team.objects.get(pk=team)
 
                 if team in user.teams.all():
-                    default_team_id = str(team.id)
+                    team_id = str(team.id)
                 else:
                     logger.warning(f"Tried to create an auth token with user {user} and team {team} but that user doesn't belong to that team.")
             else:
-                default_team_id = str(user.default_team.id)
+                logger.debug("Team not included. Attempting to set team using the user's default team.")
+                team_id = str(user.default_team.team.id)
         except Exception as e:
             logger.info(f"User {user} doesn't have a team to serialize (error thrown: {e})")
         return JWT.encode({
             USER_ID_CLAIM: str(user.id),
-            TEAM_ID_CLAIM: default_team_id,
+            TEAM_ID_CLAIM: team_id,
         })
 
     @staticmethod

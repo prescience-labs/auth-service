@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from common.services.jwt import JWT
-from v1.serializers import UserSerializer, UserDetailSerializer
+from v1.serializers import UserSerializer, UserDetailSerializer, CurrentUserSerializer
 
 User = get_user_model()
 
@@ -17,10 +17,16 @@ class UserDetail(generics.RetrieveAPIView):
     serializer_class    = UserDetailSerializer
 
 class UserFromTokenDetail(generics.RetrieveAPIView):
-    serializer_class    = UserDetailSerializer
+    serializer_class = CurrentUserSerializer
 
     def get_queryset(self):
         token               = JWT.get_token_from_request(self.request)
         payload             = JWT.decode(token)
         self.kwargs['pk']   = payload['user_id']
         return User.objects.filter(is_active=True)
+
+    def get_serializer_context(self):
+        token   = JWT.get_token_from_request(self.request)
+        payload = JWT.decode(token)
+        print(payload)
+        return {'active_team':payload.get('team_id', None)}

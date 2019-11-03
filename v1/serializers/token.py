@@ -47,7 +47,7 @@ class TokenSerializer(serializers.Serializer):
 
 class TokenObtainSerializer(TokenSerializer):
     def __init__(self, *args, **kwargs):
-        self.fields['team'] = serializers.CharField()
+        self.fields['team'] = serializers.CharField(default=None)
         super().__init__(*args, **kwargs)
 
     @classmethod

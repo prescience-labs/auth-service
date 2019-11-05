@@ -89,9 +89,9 @@ class ForceTokenObtainSerializer(TokenSerializer):
     `can_force_user_login`.
     """
     def __init__(self, *args, **kwargs):
+        self.fields['team']                 = serializers.CharField(default=None)
+        self.fields[self.username_field]    = serializers.CharField()
         super().__init__(*args, **kwargs)
-
-        self.fields[self.username_field] = serializers.CharField()
         del(self.fields['password'])
 
     def validate(self, attrs):
@@ -103,9 +103,10 @@ class ForceTokenObtainSerializer(TokenSerializer):
 
             client = Client.objects.get(client_id=client_id, client_secret=client_secret)
             if client.permissions.filter(codename='can_force_user_login').exists():
-                user_email = request.data['email']
-                user = User.objects.get(email=user_email)
-                token = JWT.get_user_token(user)
+                user_email  = request.data['email']
+                user        = User.objects.get(email=user_email)
+                team        = attrs.get('team', None)
+                token       = JWT.get_user_token(user, team)
                 return {'token':token}
         except:
             raise exceptions.NotAuthenticated('The authentication was invalid')

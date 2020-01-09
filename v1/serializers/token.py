@@ -102,6 +102,8 @@ class ForceTokenObtainSerializer(TokenSerializer):
             client_secret   = auth_header.split(':')[1]
 
             client = Client.objects.get(client_id=client_id, client_secret=client_secret)
+            print('GOT CLIENT:')
+            print(client.id)
             if client.permissions.filter(codename='can_force_user_login').exists():
                 user_email  = request.data['email']
                 user        = User.objects.get(email=user_email)

@@ -106,6 +106,8 @@ class JWT:
         """
         Decide what goes into a token when a user requests one.
         """
+        print('GET USER TOKEN')
+        print(user.id)
         team_id = None
         try:
             print(team)
